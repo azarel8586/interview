@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AirBnB - Star Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      img.resize {
+        display: block;
+        height: auto;
+        width: auto;
+        max-width: 80px;
+        max-height: 80px;
+      }
+      img {
+        position: relative;
+      }
+      #stage {
+        width:100%;
+      }
+      .cnt_ani ul{ 
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+      }
+      .cnt_ani li {
+        //display: inline;
+
+      }
+    </style>
+    <script type="text/javascript">
+      class Animate {
+        constructor({ duration, funcDraw }) {
+          this.start = performance.now();
+          this.duration = duration;
+          this.funcDraw = funcDraw;
+        }
+        doAnimation() {
+          const start = this.start;
+          const duration = this.duration;
+          const funcDraw = this.funcDraw;
+          this.animationId = requestAnimationFrame(function animate(time) {
+            let timeFraction = (time - start) / duration;
+            if (timeFraction > 1) {
+              timeFraction = 1;
+            }
+            //could have functions for easing and all that shiz
+            funcDraw(timeFraction);
+            if (timeFraction < 1) {
+              requestAnimationFrame(animate);
+            }
+          });
+        }
+      }
+
+      const navMenu = document.querySelector("nav ul");
+      navMenu.addEventListener("click", function(e) {
+        let puppet = "#" + e.target.attributes["data-target"].value;
+        let target = document.querySelector(puppet);
+        let animator = new Animate({
+          duration: 3000,
+          funcDraw: function(fractionProgress) {
+            let pos = 800 * fractionProgress;
+            console.log(pos, fractionProgress);
+            target.style.left = pos + "px";
+          }
+        });
+        animator.doAnimation();
+      });
+
+    </script>
+</head>
+<body>
+  <div class="main">
+  <h1>The Grand Race!</h1>
+  <nav class="cnt_ani">
+    <ul>
+      <li data-target='p01'>Start 01</li>
+      <li data-target='p02'>Start 02</li>
+      <li data-target='p03'>Start 03</li>
+      <li data-target='p04'>Start 04</li>
+    </ul>
+  </nav>
+  <div id="stage">
+    <img id="p01" class='resize' src="https://i.pinimg.com/originals/17/95/37/179537c62d5e76ad3de464754b850d89.jpg"/>
+    <img id="p02" class='resize' src="https://raikou1.donmai.us/fb/38/__gm_gm_sniper_ii_guncannon_and_guncannon_mp_type_gundam_gundam_side_story_rise_from_the_ashes_and_sd_gundam_drawn_by_noah_noah__fb380192e61b80dfe18adbcfcefdfab5.jpg" />
+    <img id="p03" class='resize' src="https://vignette.wikia.nocookie.net/villains/images/6/69/Madnug_original.jpg/revision/latest?cb=20140608192900" />
+    <img id="p04" class='resize' src="https://www.absoluteanime.com/sd_gundam/zero.gif"/>
+  </div>
+</div>
+</body>
+</html>
