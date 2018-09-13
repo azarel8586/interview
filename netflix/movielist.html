@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #1d2126;
+        color: white;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id='main'>
+    </div>
+    
+    <script type="text/jsx">
+      //  Given some data from different sources, write a React component that displays a list of Movie Title, Rating, Language
+      class MovieItem extends React.Component {
+        render() {
+          return (
+            <div>
+              {this.props.movie.title}
+            </div>
+          );
+        }
+      }
+
+      class MovieList extends React.Component {
+        constructor(props) {
+          super(props);
+          let composedData = this.constructMovieData(props.titles, props.ratings, props.languages);
+          this.state = {movieData: composedData};
+        }
+        // Regigger this based on ID
+        constructMovieData(titles, ratings = null, languages = null) {
+          if (!titles) { return {}; }
+          // we require title because ... well you need at LEAST that information.  We'll then search for the other data.
+          const retObj = {};
+          for (let i = 0; i < titles.length; i++) {
+             // so now let's look for everything else
+            
+            retObj[titles[i].id] = {
+              ...titles[i], 
+              ...this.findObjectById(titles[i].id, ratings), 
+              ...this.findObjectById(titles[i].id, languages)
+            }
+          }
+          //debugger;
+          return retObj;
+        }
+        findObjectById(id, searchable) {
+          if (searchable == null) { return {}; }
+          for (let idx in searchable) {
+            if (searchable[idx].id === id){
+              return searchable[idx]; 
+            }
+          }
+          return {};
+        }
+        
+        render() {
+          let movieRows = [];
+          for (let item in this.state.movieData) {
+            movieRows.push(<MovieItem movie={this.state.movieData[item]}/>);
+          }
+          return (
+            <section>
+              <h1>Available Titles</h1>
+              <div>
+                {movieRows}
+              </div>
+            </section>
+          );
+        }
+      }
+
+      let titles = [{id: 1, title:"Shawkshank"}, {id: 2, title:"Avengers"}];
+      let ratings = [{id: 1, rating: 95}, {id: 2, rating: 45}];
+      let languages = [{id: 1, language: "en-US"}, {id: 2, language: "eu-FR"}];
+      ReactDOM.render(
+        <MovieList
+          titles={titles}
+          ratings={ratings}
+          languages={languages}/>,
+        document.getElementById('main')
+      );
+    </script>
+  </body>
+</html>
