@@ -1,0 +1,162 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #1d2126;
+        color: white;
+      }
+      a {
+        color: #fff;
+        text-decoration: none;
+      }
+      nav > ul {
+        display: inline-flex;
+        justify-content: flex-start;
+      }
+      li { 
+        margin-right: 30px;
+      }
+      li > div {
+        display: inline-block; 
+      }
+      .submenu {
+        position: relative;
+      }
+      .dropMenu {
+        display: none;
+        position: absolute;
+        left: 10px;
+        background: #ccc;
+        color: #333;
+        padding: 10px 30px 30px;
+      }
+      li:hover .dropMenu, .dropMenu:hover {
+        display: block;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id='app'>
+      
+    </div>
+    
+    <script type="text/jsx">
+      /**
+        Phone Screen In React (or framework of your choice, but I chose React) build a re-usable navigation header that has a Logo, Title, and dropdown menu with links.
+
+Pretty straightforward, similar to what we did in CL_Web. Interviewer added constraints as I went like "What would change if the data in the dropdown was dynamic and came from the server?" Lots of general knowledge questions: differences in ES5 vs ES6. Describe browser re-paint, how do you minimize? What causes JavaScript memory leaks? How do you discover them? etc
+      **/
+      class MenuItem extends React.Component {
+        render() {
+          return (
+            <li><a href={this.props.href}>{this.props.title}</a></li>
+          );
+        }
+      }
+      class DropMenu extends React.Component {
+        generateMenuItems(menuItems) {
+          let ret = [];
+          for (let item in menuItems) {
+            let ele = menuItems[item];
+            if (ele.hasOwnProperty('children')) {
+              ret.push(<DropMenu menuItems={ele.children}/>);
+            } else {
+              ret.push(<MenuItem href={ele.href} title={ele.title}/>);
+            }
+          }
+          return ret;
+        }
+        
+        render() {
+          var menu = this.generateMenuItems(this.props.menuItems);
+          return (
+            <li className='submenu'>
+              <a href={this.props.href}>{this.props.title}</a>
+              <ul className='dropMenu'>
+                {menu}
+              </ul>
+            </li>
+          );
+        }
+      }
+      class Menu extends React.Component {
+        generateMenuItems(menuItems) {
+          let ret = [];
+          for (let item in menuItems) {
+            let ele = menuItems[item];
+            if (ele.hasOwnProperty('children')) {
+              ret.push(<DropMenu menuItems={ele.children} href={ele.href} title={ele.title}/>);
+            } else {
+              ret.push(<MenuItem href={ele.href} title={ele.title}/>);
+            }
+          }
+          return ret;
+        }
+        
+        render() {
+          // prep the menu items and get some data back
+          var menu = this.generateMenuItems(this.props.menuItems);
+          return (
+            <nav>
+              <ul>
+                {menu}
+              </ul>
+            </nav>
+          ); 
+        }
+      }
+      // stub out the menu components
+      class Header extends React.Component {
+        constructor (props) {
+          // in case
+          super(props); 
+        }
+        
+        render() {
+          // we will expect a couple of things here
+            // 1 - A list of the menu items (1d for now)
+            // 2 - A title
+            // 3 - Path for the logo
+            // 4 - The link for the logo
+          
+          return (
+            <header>
+              <h1>{this.props.title}</h1>
+              <img className='logo' src={this.props.logoHref}/>
+              <Menu
+                menuItems={this.props.menu}/>
+            </header>
+          );
+        }
+      }
+
+      // kinda global, but this could be passed in
+      const menuItems = [
+        {title: 'foo', href: '#', children: [
+          {title: 'foo-bar', href: '#'},
+          {title: 'foo-baz', href: '#'},
+          {title: 'foo-bip', href: '#'}
+        ]},
+        {title: 'bar', href: '#'},
+        {title: 'biz', href: '#'},
+        {title: 'foo', href: '#', children: [
+          {title: 'foo-bar', href: '#'},
+          {title: 'foo-baz', href: '#'},
+          {title: 'foo-bip', href: '#'}
+        ]}
+      ];
+      ReactDOM.render(
+        <Header
+          title = 'Red! Blue! Yeelllloooww!'
+          logoHref = '#'
+          menu = {menuItems}
+          />,
+        document.getElementById('app')
+      );
+    </script>
+  </body>
+  </body>
+</html>
