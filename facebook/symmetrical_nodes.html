@@ -1,0 +1,65 @@
+<html lang="en" class="">
+  <head>
+  </head>
+  <body>
+    <div id="root1">
+      <div>
+        <div></div>
+      </div>
+      <div>
+        <div id="node1"></div>
+        <div></div>
+      </div>
+    </div>
+
+    <div id="root2">
+      <div>
+        <div></div>
+      </div>
+      <div>
+        <div id="node2"></div>
+        <div></div>
+      </div>
+    </div>
+    
+    <script>
+      function getPath(root, node) {
+        const pathStack = [];
+        let curEle = node;
+        while (curEle !== root && curEle && curEle.parentNode) {if (window.CP.shouldStopExecution(0)) break;
+          const parent = curEle.parentNode;
+          const index = Array.from(parent.childNodes).indexOf(curEle);
+          pathStack.push(index);
+          curEle = curEle.parentNode;
+        }window.CP.exitedLoop(0);
+        return pathStack;
+      }
+
+      function getNodeFromPath(root, path) {
+        // we want to be a little distructive with the path so let's copy it
+        const p = [].concat(path);
+        let curEle = root;
+        while (p.length && curEle) {if (window.CP.shouldStopExecution(1)) break;
+          const temp = Array.from(curEle.childNodes);
+          curEle = temp[p.pop()];
+        }window.CP.exitedLoop(1);
+        return curEle;
+      }
+
+      function getSymmetricNode(root1, root2, node) {
+        // node should exist root1
+        const path = getPath(root1, node);
+        return getNodeFromPath(root2, path);
+      }
+
+      const root1 = document.getElementById('root1');
+      const root2 = document.getElementById('root2');
+      const node1 = document.getElementById('node1');
+      const node2 = document.getElementById('node2');
+      const nodeX = getSymmetricNode(root1, root2, node1);
+
+      console.log('Result:', nodeX === node2); // true
+      //# sourceURL=pen.js
+    </script>
+  </body>
+</html>
