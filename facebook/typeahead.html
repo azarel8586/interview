@@ -1,0 +1,57 @@
+<html lang="en" class="">
+<head>
+</head>
+<body>
+  <section>
+    <label for="search_field">Site Search</label>
+    <input type="text" placeholder="Typeahead" id="search_field">
+    <button type="button" class="primary_cta" id="search_submit">Search</button>
+  </section>
+  
+  <script>
+  // Geheto debounce typeahead
+  document.addEventListener("DOMContentLoaded", function (event) {
+    // application page is loaded.
+    const input = document.getElementById('search_field');
+    const submit = document.getElementById('search_submit');
+
+    var fetchData = function (input) {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          console.log('resolve');
+          resolve('foo');
+        }, 1000);
+      });
+    };
+
+    // our typeahead handler (here so we don't closure this code 10,000 times)
+    const typeahead = function () {
+      console.log('Inside 1');
+      let allowFetch = true;
+      let lastTimeout = null;
+      return e => {
+        console.log('Inside 2');
+        let val = e.target.value;
+        if (allowFetch && val.length > 2) {
+          if (lastTimeout) clearTimeout(lastTimeout);
+          lastTimeout = setTimeout(function () {
+            console.log('timeout set');
+            allowFetch = false;
+            var res = fetchData();
+            res.then(function (response) {
+              allowFetch = true;
+              console.log('final', allowFetch, response);
+            });
+          }, 400);
+        }
+      };
+    }();
+
+    // let's set up our key up w debounce
+    console.log('Before Attach', input);
+    input.addEventListener('keyup', typeahead);
+  });
+  //# sourceURL=pen.js
+  </script>
+</body>
+</html>
