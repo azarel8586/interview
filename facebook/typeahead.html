@@ -6,52 +6,66 @@
     <label for="search_field">Site Search</label>
     <input type="text" placeholder="Typeahead" id="search_field">
     <button type="button" class="primary_cta" id="search_submit">Search</button>
+    <ul id='typeahead_container'></ul>
   </section>
   
   <script>
-  // Geheto debounce typeahead
-  document.addEventListener("DOMContentLoaded", function (event) {
-    // application page is loaded.
-    const input = document.getElementById('search_field');
-    const submit = document.getElementById('search_submit');
+    const TYPEAHEAD = ['Foo', 'Bar', 'Bip', 'Baz', 'Crunk'];
+    // Geheto debounce typeahead
+      document.addEventListener("DOMContentLoaded", function (event) {
+        // application page is loaded.
+        const input = document.getElementById('search_field');
+        const submit = document.getElementById('search_submit');
+        function fetchData (input) {
+          return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+              resolve(TYPEAHEAD);
+            }, 600);
+          });
+        };
 
-    var fetchData = function (input) {
-      return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-          console.log('resolve');
-          resolve('foo');
-        }, 1000);
-      });
-    };
-
-    // our typeahead handler (here so we don't closure this code 10,000 times)
-    const typeahead = function () {
-      console.log('Inside 1');
-      let allowFetch = true;
-      let lastTimeout = null;
-      return e => {
-        console.log('Inside 2');
-        let val = e.target.value;
-        if (allowFetch && val.length > 2) {
-          if (lastTimeout) clearTimeout(lastTimeout);
-          lastTimeout = setTimeout(function () {
-            console.log('timeout set');
-            allowFetch = false;
-            var res = fetchData();
-            res.then(function (response) {
-              allowFetch = true;
-              console.log('final', allowFetch, response);
-            });
-          }, 400);
+        //rendering function
+        function renderTypeAhead(itemList) {
+          // if the list is there, let's reuse it
+          let container = document.getElementById('typeahead_container');
+          if (!container) {
+            container = document.createElement('ul')
+            container.setAttribute('id', 'typeahead_container');
+          }
+          // remove the list items
+          while (container.firstChild) {
+              container.removeChild(container.firstChild);
+          }
+          itemList.forEach((item) => {
+            let tempNode = document.createElement('li');
+            tempNode.append(document.createTextNode(item));
+            container.append(tempNode);
+          });
         }
-      };
-    }();
 
-    // let's set up our key up w debounce
-    console.log('Before Attach', input);
-    input.addEventListener('keyup', typeahead);
-  });
-  //# sourceURL=pen.js
+        // our typeahead handler (here so we don't closure this code 10,000 times)
+        const typeahead = function () {
+          console.log('Inside 1');
+          let allowFetch = true;
+          let lastTimeout = null;
+          return e => {
+            let val = e.target.value;
+            if (allowFetch && val.length > 2) {
+              if (lastTimeout) clearTimeout(lastTimeout);
+              lastTimeout = setTimeout(function () {
+                allowFetch = false;
+                var res = fetchData();
+                res.then(function (response) {
+                  allowFetch = true;
+                  renderTypeAhead(response);
+                });
+              }, 400);
+            }
+          };
+        }();
+        // let's set up our key up w debounce
+        input.addEventListener('keyup', typeahead);
+      });
   </script>
 </body>
 </html>
