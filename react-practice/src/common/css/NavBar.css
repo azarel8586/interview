@@ -1,0 +1,19 @@
+.NavBar ul {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #ccc;
+    padding: 25px;
+    margin: 0;
+}
+
+.NavBar li {
+    list-style: none;
+    margin: 10px;
+}
+
+.NavBar a {
+    font-size: 16pt;
+    color: #333;
+    text-decoration: none;
+}
