@@ -7,6 +7,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import Home from './Home';
 import PublicHolidays from './common/PublicHolidays';
+import Accordion from './common/Accordion';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: '/day01',
         element: <PublicHolidays/>
+      },
+      {
+        path: '/day02',
+        element: <Accordion/>
       }
     ]
   }

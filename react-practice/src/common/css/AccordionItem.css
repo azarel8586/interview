@@ -1,0 +1,30 @@
+.accordion-item {
+    padding: 25px 0;
+    border-bottom: 1px solid #333;
+}
+
+.accordion-item header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.accordion-item header h3 {
+    flex-grow: 1;
+}
+.accordion-item .icon {
+    width: 2em;
+    justify-content: space-around;
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: brown;
+}
+.accordion-item article {
+    margin: 10px 0;
+    visibility: hidden;
+    display: none;
+}
+.accordion-item article.open {
+    visibility: visible;
+    display: block;
+}

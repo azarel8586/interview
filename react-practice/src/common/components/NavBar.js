@@ -7,6 +7,7 @@ const NavBar = () => {
             <ul>
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/day01">Day 1 - Public Holidays</Link></li>
+                <li><Link to="/day02">Day 2 - Accordion</Link></li>
             </ul>
         </nav>
     )
