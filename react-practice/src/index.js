@@ -8,6 +8,8 @@ import App from './App';
 import Home from './Home';
 import PublicHolidays from './common/PublicHolidays';
 import Accordion from './common/Accordion';
+import ToDo from './common/ToDo';
+import Pokemon from './common/Pokemon';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: '/day02',
         element: <Accordion/>
+      },
+      {
+        path: '/day03',
+        element: <ToDo/>
+      },
+      {
+        path: '/day04',
+        element: <Pokemon/>
       }
     ]
   }
