@@ -1,8 +1,10 @@
-import useFetch from "./hooks/useFetch";
+import {useFetch} from "./hooks/useFetch";
 
 const Pokemon = () => {
-    const fetchData  = useFetch('https://pokeapi.co/api/v2/pokemon')
-    console.log('fetching');
+    const { fetchPage, setLimit } = useFetch('https://pokeapi.co/api/v2/pokemon', 10);
+    //console.log('fetching', fetchData());
+    const allPokemon = fetchPage();
+    console.log('fetching all ', allPokemon);
     return (<></>);
 }
 

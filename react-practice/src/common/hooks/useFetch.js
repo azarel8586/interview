@@ -1,52 +1,32 @@
 import { useRef, useState, useEffect } from 'react';
 
-const useFetch = (path, pageLimit = 20, offset = 1) => {
-    const uri = path;
-    const [limit, setLimit] = useState(pageLimit);
-    const [page, setPage] = useState(offset);
-    const pageRef = useRef(offset) 
-    const limitRef = useRef(pageLimit);
+export function useFetch(uri, initialLimit = 10) {
+    const [limit, setLimit] = useState(initialLimit);
+    const limitRef = useRef(limit);
 
-    // update the limitRef every time the limit is altered
-    useEffect(() => {
+    useEffect(()=> {
         limitRef.current = limit;
-        pageRef.current = page;
-    }, [limit, page]);
+    }, [limit]);
 
-    const fetchNextPage = () => {
-        setPage(page + 1);
-        return fetchData();
-    }
-
-    const fetchPage = (target) => {
-        setPage(target);
-        return fetchData();
-    }
-
-    const fetchData = async () => {
+    const fetchPage = async (pageParam = 0) => {
         const limit = limitRef.current;
-        const offset = pageRef.current;
-
-        const restPath = `${uri}?${new URLSearchParams({
-            limit: limit,
-            offset: offset,
+        const offset = pageParam;
+        const path = `${uri}?${new URLSearchParams({
+            'limit': limit,
+            'offset': offset
         })}`;
 
-        const res = await fetch(restPath);
+        const response = await fetch(path);
+        console.log("res", response);
 
-        console.log('FOP', res);
-        return res;
+        if (!response.ok) {
+            throw new Error('Error fetching data: ', response.statusText);
+        }
+
+        const data = await response.json();
+        console.log("data", data);
+        return data;
     }
 
-    fetchData();
-
-    // fetch(OPEN_HOLIDAY_API + 'Countries')
-    //   .then(response => response.json())
-    //   .then(json => {
-    //     console.log('foo', json);
-    //     setCountries(json);
-    //   })
-    //   .finally(() => setIsLoading(false));
+    return { fetchPage, setLimit };
 }
-
-export default useFetch;
